@@ -5,9 +5,10 @@ target/
 .classpath
 .project
 .settings/
+test/
 
 dependency-reduced-pom.xml
-java
+java.sh
 
 # Log file
 *.log
