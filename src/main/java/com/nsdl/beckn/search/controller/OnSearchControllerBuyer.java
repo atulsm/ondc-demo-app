@@ -58,7 +58,8 @@ public class OnSearchControllerBuyer
                 final LookupRequest lookupRequest = new LookupRequest((String)null, context.getCountry(), context.getCity(), context.getDomain(), BecknUserType.BPP.type());
                 this.validator.validateHeader(context.getBapId(), httpHeaders, body, lookupRequest);
             }
-            this.auditService.audit(this.buildAuditModel(httpHeaders, body, model));
+            //skip audit call for now
+            //this.auditService.audit(this.buildAuditModel(httpHeaders, body, model));
         }
         catch (Exception e) {
             e.printStackTrace();
