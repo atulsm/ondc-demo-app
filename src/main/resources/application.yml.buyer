@@ -1,5 +1,11 @@
 server:
-  port: 8080
+  ssl:
+    key-store: classpath:ondc.p12
+    key-store-password: password
+    key-store-type: pkcs12
+    key-alias: ondc
+    key-password: password
+  port: 8444
 ehcache:
   cacheregion:
     beckn-api:
