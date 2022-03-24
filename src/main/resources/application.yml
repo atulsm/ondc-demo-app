@@ -22,3 +22,4 @@ beckn:
     file-path: ./
   entity:
     type: seller
+debug: true

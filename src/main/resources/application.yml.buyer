@@ -16,3 +16,4 @@ beckn:
     file-path: ./
   entity:
     type: buyer
+debug: true
