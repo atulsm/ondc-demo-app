@@ -89,6 +89,8 @@ public class SearchServiceSeller
             String host = httpHeaders.get("remoteHost").get(0);
             if("0:0:0:0:0:0:0:1".equals(host)) {
             	host="localhost";
+            }else {
+            	host = "pilot-gateway-1.beckn.nsdl.co.in";
             }
             
             String onSearchresp = this.sendRequest.send("https://" +host +"/on_search", 
