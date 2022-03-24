@@ -52,7 +52,7 @@ public class SearchControllerSeller
     @Value("${beckn.entity.type}")
     private String entityType;
     
-    @PostMapping({ "/seller/adaptor/search" })
+    @PostMapping({ "/search" })
     public ResponseEntity<String> search(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
         SearchControllerSeller.log.info("The body in {} adaptor is {}", (Object)"search", (Object)this.jsonUtil.unpretty(body));
         SearchControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
