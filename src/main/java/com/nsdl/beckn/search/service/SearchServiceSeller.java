@@ -83,6 +83,9 @@ public class SearchServiceSeller
             OnSchema respBody = new OnSchema();
             respBody.setContext(request.getContext());
             respBody.getContext().setAction("on_search");
+            respBody.getContext().setBppId("flipkart.logistics.test");
+            respBody.getContext().setBppUri("https://3.111.199.126/");
+
             respBody.setMessage(onSearch);
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
