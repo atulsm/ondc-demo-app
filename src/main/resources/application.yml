@@ -5,7 +5,7 @@ server:
     key-store-type: pkcs12
     key-alias: ondc
     key-password: password
-  port: 8443
+  port: 443
 ehcache:
   cacheregion:
     beckn-api:
