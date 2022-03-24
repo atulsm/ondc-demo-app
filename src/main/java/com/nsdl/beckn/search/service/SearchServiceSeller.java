@@ -86,7 +86,12 @@ public class SearchServiceSeller
             respBody.setMessage(onSearch);
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
-            String onSearchresp = this.sendRequest.send(request.getContext().getBapUri()+"on_search", 
+            String host = httpHeaders.get("remoteHost").get(0);
+            if("0:0:0:0:0:0:0:1".equals(host)) {
+            	host="localhost";
+            }
+            
+            String onSearchresp = this.sendRequest.send("https://" +host +"/on_search", 
             		httpHeaders, respJson, configModel.getMatchedApi());
             SearchServiceSeller.log.info(onSearchresp);
 

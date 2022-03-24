@@ -59,6 +59,12 @@ public class SearchControllerSeller
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);
         }
+        
+        //Injecting remote client hostname to headers
+        httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
+        SearchControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
+        
+        
         final Schema model = (Schema)this.jsonUtil.toModel(body, (Class)Schema.class);
         final Context context = model.getContext();
         final String bapId = context.getBapId();
