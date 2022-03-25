@@ -27,7 +27,9 @@ import com.nsdl.beckn.common.validator.BodyValidator;
 import com.nsdl.beckn.common.service.ApplicationConfigService;
 import com.nsdl.beckn.common.sender.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -47,6 +49,10 @@ public class SearchServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
+    
+    @Autowired
+    @Value("classpath:dummyResponses/onSearch.json")
+    private Resource resource;
     
     public ResponseEntity<String> search(final HttpHeaders httpHeaders, final Schema request) throws JsonProcessingException {
         SearchServiceSeller.log.info("Going to validate json request before sending to buyer...");
@@ -76,8 +82,7 @@ public class SearchServiceSeller
             SearchServiceSeller.log.info("Response from ekart adaptor: " + resp);
             
             //creating a dummy response
-            resp = "{\"catalog\": { \"bpp/descriptor\": { \"name\": \"Flipkart Ekart\" }, \"bpp/providers\": [ { \"id\": \"flipkart.logistics.test\", \"descriptor\": { \"name\": \"Flipkart Ekart\" }, \"categories\": [ { \"id\": \"standard-delivery\", \"descriptor\": { \"name\": \"Standard Delivery\" } } ], \"items\": [ { \"id\": \"standard-document-delivery\", \"descriptor\" : { \"name\" : \"Standard Document Delivery\", \"images\" : [ \"https://ekartlogistics.com/assets/images/ekWhiteLogo.png\" ] }, \"category_id\": \"standard-delivery\", \"price\" : { \"currency\": \"INR\", \"value\": \"100\" }, \"matched\": true } ] }]} }";
-            OnSearchMessage onSearch = this.jsonUtil.toModel(resp, OnSearchMessage.class);
+            OnSearchMessage onSearch = this.mapper.readValue(this.resource.getInputStream(), OnSearchMessage.class);
             SearchServiceSeller.log.info(onSearch.toString());
             
             OnSchema respBody = new OnSchema();
