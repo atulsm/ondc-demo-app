@@ -34,14 +34,17 @@ public class ApplicationConfigService
         ApplicationConfigService.log.info("going to load the configuration for subscriberid: {} and api: {}", (Object)subscriberId, (Object)apiName);
         try {
             final List<ConfigModel> configModels = (List<ConfigModel>)this.mapper.readValue(this.resource.getInputStream(), (JavaType)this.mapper.getTypeFactory().constructCollectionType((Class)List.class, (Class)ConfigModel.class));
-            ConfigModel configModel = null;
+            ConfigModel configModel = configModels.get(0);
+            /*
+             * Always respond with the default configmodel for the app
+             * 
             if("".equals(subscriberId)) {
             	ApplicationConfigService.log.info("Getting the default config model since subscriberid is empty");
             	configModel=configModels.get(0);
             }else {
             	configModel = this.findConfigById(subscriberId, configModels);
             }
-            	
+            */
             configModel.setMatchedApi(this.findMatchingApi(configModel, apiName));
             ApplicationConfigService.log.info("The content of init config file is {}", (Object)configModel);
             return configModel;
