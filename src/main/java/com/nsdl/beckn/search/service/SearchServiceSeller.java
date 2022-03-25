@@ -88,8 +88,8 @@ public class SearchServiceSeller
             OnSchema respBody = new OnSchema();
             respBody.setContext(request.getContext());
             respBody.getContext().setAction("on_search");
-            respBody.getContext().setBppId("flipkart.logistics.test");
-            respBody.getContext().setBppUri("https://3.111.199.126/");
+            respBody.getContext().setBppId(configModel.getSubscriberId());
+            respBody.getContext().setBppUri(configModel.getSubscriberUrl());
 
             respBody.setMessage(onSearch);
             String respJson = this.jsonUtil.toJson((Object)respBody);
@@ -98,7 +98,7 @@ public class SearchServiceSeller
             if("0:0:0:0:0:0:0:1".equals(host)) {
             	host="localhost";
             }else {
-            	host = "pilot-gateway-1.beckn.nsdl.co.in";
+            	host = configModel.getBecknGateway();
             }
             
             String onSearchresp = this.sendRequest.send("https://" +host +"/on_search", 

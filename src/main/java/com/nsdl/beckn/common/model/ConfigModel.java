@@ -10,8 +10,11 @@ import java.io.Serializable;
 
 public class ConfigModel implements Serializable
 {
+	
     private static final long serialVersionUID = -5465633216093570849L;
     private String subscriberId;
+    private String subscriberUrl;
+    private String becknGateway;
     private String keyid;
     private SigningModel signing;
     private List<ApiParamModel> api;
@@ -62,7 +65,23 @@ public class ConfigModel implements Serializable
         this.matchedApi = matchedApi;
     }
     
-    @Override
+    public String getSubscriberUrl() {
+		return subscriberUrl;
+	}
+
+	public void setSubscriberUrl(String subscriberUrl) {
+		this.subscriberUrl = subscriberUrl;
+	}
+
+	public String getBecknGateway() {
+		return becknGateway;
+	}
+
+	public void setBecknGateway(String becknGateway) {
+		this.becknGateway = becknGateway;
+	}
+
+	@Override
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
