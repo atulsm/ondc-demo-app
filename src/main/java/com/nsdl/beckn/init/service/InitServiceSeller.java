@@ -111,6 +111,7 @@ public class InitServiceSeller
             respBody.getContext().setAction("on_init");
             respBody.getContext().setBppId(configModel.getSubscriberId());
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
+            httpHeaders.remove("host");
 
             respBody.setMessage(onInit);
             String respJson = this.jsonUtil.toJson((Object)respBody);
