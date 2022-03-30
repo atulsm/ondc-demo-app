@@ -105,7 +105,6 @@ public class InitServiceSeller
             
             //creating a dummy response
             OnInitMessage onInit = this.mapper.readValue(this.resource.getInputStream(), OnInitMessage.class);
-            InitServiceSeller.log.info(onInit.toString());
             
             OnInitRequest respBody = new OnInitRequest();
             respBody.setContext(request.getContext());
@@ -115,6 +114,7 @@ public class InitServiceSeller
 
             respBody.setMessage(onInit);
             String respJson = this.jsonUtil.toJson((Object)respBody);
+            InitServiceSeller.log.info(respJson);
 
             String host = httpHeaders.get("remoteHost").get(0);
             if("0:0:0:0:0:0:0:1".equals(host)) {
