@@ -55,8 +55,6 @@ public class SearchControllerSeller
     
     @PostMapping({ "/search" })
     public ResponseEntity<String> search(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
-        SearchControllerSeller.log.info("The body in {} adaptor is {}", (Object)"search", (Object)this.jsonUtil.unpretty(body));
-        SearchControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);
         }
@@ -76,6 +74,10 @@ public class SearchControllerSeller
             SearchControllerSeller.log.info("Rejecting call from " + bapId + " since its not whitelisted");
             return new ResponseEntity(HttpStatus.OK);
         }
+        
+        SearchControllerSeller.log.info("The body in {} adaptor is {}", (Object)"search", (Object)this.jsonUtil.unpretty(body));
+        SearchControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+       
         
         final boolean authenticate = configModel.getMatchedApi().isHeaderAuthentication();
         SearchControllerSeller.log.info("does buyer {} requires to be authenticated ? {}", (Object)bapId, (Object)authenticate);
