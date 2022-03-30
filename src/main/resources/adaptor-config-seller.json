@@ -4,7 +4,7 @@
 		"subscriber_url": "https://3.111.199.126/",
 		"beckn_gateway":"pilot-gateway-1.beckn.nsdl.co.in",
 		"keyid": "beckn.org-|1",
-		"disableAdaptorCalls": "true",
+		"disable_adaptor_calls": "true",
 		"signing": {
 			"certificate_used": false,
 			"certificate_type": "",
