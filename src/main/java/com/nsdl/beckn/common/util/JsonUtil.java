@@ -48,7 +48,7 @@ public class JsonUtil
             return model;
         }
         catch (JsonProcessingException e) {
-            JsonUtil.log.error("Error while json processing for {}. Not a valid json {}", (Object)schemaClass, (Object)e);
+            JsonUtil.log.error("Error while json processing for {}. Not a valid json {}", (Object)schemaClass, e.getMessage());
             throw new ApplicationException(ErrorCode.INVALID_REQUEST);
         }
     }
