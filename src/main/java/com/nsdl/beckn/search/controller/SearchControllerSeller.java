@@ -63,15 +63,21 @@ public class SearchControllerSeller
         httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
         SearchControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
         
+        final Schema model;
+        try {
+        	model = (Schema)this.jsonUtil.toModel(body, (Class)Schema.class);
+        }catch(Exception e) {
+            SearchControllerSeller.log.debug("Exception while parsing model");
+            return new ResponseEntity(HttpStatus.OK);
+        }
         
-        final Schema model = (Schema)this.jsonUtil.toModel(body, (Class)Schema.class);
         final Context context = model.getContext();
         final String bapId = context.getBapId();
         final String bppId = context.getBppId();
         final ConfigModel configModel = this.configService.loadApplicationConfiguration(bppId, "search");
         
         if(!configModel.getWhitelistBaps().contains(bapId)) {
-            SearchControllerSeller.log.info("Rejecting call from " + bapId + " since its not whitelisted");
+            SearchControllerSeller.log.debug("Rejecting call from " + bapId + " since its not whitelisted");
             return new ResponseEntity(HttpStatus.OK);
         }
         
