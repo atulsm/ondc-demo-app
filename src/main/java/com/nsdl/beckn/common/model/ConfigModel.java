@@ -16,6 +16,7 @@ public class ConfigModel implements Serializable
     private String subscriberUrl;
     private String becknGateway;
     private String keyid;
+    private String disableAdaptorCalls;
     private SigningModel signing;
     private List<ApiParamModel> api;
     private ApiParamModel matchedApi;
@@ -79,6 +80,14 @@ public class ConfigModel implements Serializable
 
 	public void setBecknGateway(String becknGateway) {
 		this.becknGateway = becknGateway;
+	}
+
+	public String getDisableAdaptorCalls() {
+		return disableAdaptorCalls;
+	}
+
+	public void setDisableAdaptorCalls(String disableAdaptorCalls) {
+		this.disableAdaptorCalls = disableAdaptorCalls;
 	}
 
 	@Override

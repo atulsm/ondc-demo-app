@@ -78,8 +78,11 @@ public class SearchServiceSeller
             final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "search");
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
-            String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
-            SearchServiceSeller.log.info("Response from ekart adaptor: " + resp);
+            
+            if(!"True".equals(configModel.getDisableAdaptorCalls())){              
+                String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
+                SearchServiceSeller.log.info("Response from ekart adaptor: " + resp);
+            }
             
             //creating a dummy response
             OnSearchMessage onSearch = this.mapper.readValue(this.resource.getInputStream(), OnSearchMessage.class);
