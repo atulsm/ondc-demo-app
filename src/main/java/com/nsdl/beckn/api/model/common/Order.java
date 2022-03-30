@@ -19,6 +19,8 @@ public class Order
     private Payment payment;
     private String createdAt;
     private String updatedAt;
+    private Provider provider;
+
     
     public String getId() {
         return this.id;
@@ -108,7 +110,15 @@ public class Order
         this.updatedAt = updatedAt;
     }
     
-    @Override
+    public Provider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(Provider provider) {
+		this.provider = provider;
+	}
+
+	@Override
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
