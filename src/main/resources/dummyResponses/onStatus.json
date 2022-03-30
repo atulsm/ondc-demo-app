@@ -71,7 +71,7 @@
         "instructions": {
           "name": "drop off instructions",
           "short_desc": "Drop at front desk"
-        },
+        }
       }
     },
     "quote": {
@@ -108,5 +108,4 @@
       "status": "NOT-PAID"
     }
   }
-}
 }

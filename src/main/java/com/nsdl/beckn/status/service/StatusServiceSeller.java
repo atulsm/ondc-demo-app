@@ -85,7 +85,7 @@ public class StatusServiceSeller
             final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "status");
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
-            this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
+       //     this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
 
             if(!"true".equals(configModel.getDisableAdaptorCalls())){
                 String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
