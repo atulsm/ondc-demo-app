@@ -17,6 +17,7 @@ public class ConfigModel implements Serializable
     private String becknGateway;
     private String keyid;
     private String disableAdaptorCalls;
+    private String whitelistBaps;
     private SigningModel signing;
     private List<ApiParamModel> api;
     private ApiParamModel matchedApi;
@@ -88,6 +89,14 @@ public class ConfigModel implements Serializable
 
 	public void setDisableAdaptorCalls(String disableAdaptorCalls) {
 		this.disableAdaptorCalls = disableAdaptorCalls;
+	}
+
+	public String getWhitelistBaps() {
+		return whitelistBaps;
+	}
+
+	public void setWhitelistBaps(String whitelistBaps) {
+		this.whitelistBaps = whitelistBaps;
 	}
 
 	@Override

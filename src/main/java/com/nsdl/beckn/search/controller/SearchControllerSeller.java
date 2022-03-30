@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Value;
 import com.nsdl.beckn.common.service.AuditService;
@@ -70,6 +71,12 @@ public class SearchControllerSeller
         final String bapId = context.getBapId();
         final String bppId = context.getBppId();
         final ConfigModel configModel = this.configService.loadApplicationConfiguration(bppId, "search");
+        
+        if(!configModel.getWhitelistBaps().contains(bapId)) {
+            SearchControllerSeller.log.info("Rejecting call from " + bapId + " since its not whitelisted");
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        
         final boolean authenticate = configModel.getMatchedApi().isHeaderAuthentication();
         SearchControllerSeller.log.info("does buyer {} requires to be authenticated ? {}", (Object)bapId, (Object)authenticate);
         if (authenticate) {
