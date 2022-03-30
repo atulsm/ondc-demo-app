@@ -101,6 +101,7 @@ public class StatusServiceSeller
             respBody.getContext().setAction("on_status");
             respBody.getContext().setBppId(configModel.getSubscriberId());
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
+            httpHeaders.remove("host");
 
             respBody.setMessage(onStatus);
             String respJson = this.jsonUtil.toJson((Object)respBody);
