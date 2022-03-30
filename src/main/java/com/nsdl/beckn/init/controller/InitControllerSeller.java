@@ -32,6 +32,8 @@ import com.nsdl.beckn.common.util.JsonUtil;
 import com.nsdl.beckn.common.validator.HeaderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.nsdl.beckn.init.service.InitServiceSeller;
+import com.nsdl.beckn.search.controller.SearchControllerSeller;
+
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,10 +54,15 @@ public class InitControllerSeller
     @Value("${beckn.entity.type}")
     private String entityType;
     
-    @PostMapping({ "/seller/adaptor/init" })
+    @PostMapping({ "/init" })
     public ResponseEntity<String> init(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
         InitControllerSeller.log.info("The body in {} adaptor is {}", (Object)"init", (Object)this.jsonUtil.unpretty(body));
         InitControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+        
+        //Injecting remote client hostname to headers
+        httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
+        InitControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
+        
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);
         }
