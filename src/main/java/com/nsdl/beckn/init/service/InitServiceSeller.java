@@ -115,6 +115,8 @@ public class InitServiceSeller
             respBody.setMessage(onInit);
             String respJson = this.jsonUtil.toJson((Object)respBody);
             InitServiceSeller.log.info(respJson);
+            InitServiceSeller.log.info(httpHeaders.toString());
+
 
             String host = httpHeaders.get("remoteHost").get(0);
             if("0:0:0:0:0:0:0:1".equals(host)) {
