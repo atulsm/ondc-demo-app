@@ -79,7 +79,7 @@ public class SearchServiceSeller
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
             
-            if(!"True".equals(configModel.getDisableAdaptorCalls())){              
+            if(!"true".equals(configModel.getDisableAdaptorCalls())){              
                 String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
                 SearchServiceSeller.log.info("Response from ekart adaptor: " + resp);
             }
