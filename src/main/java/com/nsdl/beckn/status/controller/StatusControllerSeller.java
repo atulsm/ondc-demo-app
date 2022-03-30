@@ -10,6 +10,7 @@ import com.nsdl.beckn.common.model.AuditDataModel;
 import com.nsdl.beckn.common.model.AuditFlagModel;
 import com.nsdl.beckn.common.model.HttpModel;
 import com.nsdl.beckn.common.model.AuditModel;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.common.model.ConfigModel;
@@ -51,11 +52,17 @@ public class StatusControllerSeller
     private AuditService auditService;
     @Value("${beckn.entity.type}")
     private String entityType;
-    
-    @PostMapping({ "/seller/adaptor/status" })
+
+
+    @PostMapping({ "/status" })
     public ResponseEntity<String> status(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
         StatusControllerSeller.log.info("The body in {} adaptor is {}", (Object)"status", (Object)this.jsonUtil.unpretty(body));
         StatusControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+
+        //Injecting remote client hostname to headers
+        httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
+        StatusControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
+
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);
         }
