@@ -121,7 +121,7 @@ public class InitServiceSeller
             	host="localhost";
             }
             
-            String onSearchresp = this.sendRequest.send("https://" +host +"/on_init", 
+            String onSearchresp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_init", 
             		httpHeaders, respJson, configModel.getMatchedApi());
             InitServiceSeller.log.info(onSearchresp);
 
