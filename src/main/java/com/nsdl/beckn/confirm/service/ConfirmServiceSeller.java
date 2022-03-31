@@ -6,9 +6,6 @@ package com.nsdl.beckn.confirm.service;
 
 import com.nsdl.beckn.api.model.onconfirm.OnConfirmMessage;
 import com.nsdl.beckn.api.model.onconfirm.OnConfirmRequest;
-import com.nsdl.beckn.api.model.onstatus.OnStatusMessage;
-import com.nsdl.beckn.api.model.onstatus.OnStatusRequest;
-import com.nsdl.beckn.status.service.StatusServiceSeller;
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -88,8 +85,8 @@ public class ConfirmServiceSeller
             }
 
             //creating a dummy response
-            OnConfirmMessage onStatus = this.mapper.readValue(this.resource.getInputStream(), OnConfirmMessage.class);
-            ConfirmServiceSeller.log.info(onStatus.toString());
+            OnConfirmMessage onConfirm = this.mapper.readValue(this.resource.getInputStream(), OnConfirmMessage.class);
+            ConfirmServiceSeller.log.info(onConfirm.toString());
 
             OnConfirmRequest respBody = new OnConfirmRequest();
             respBody.setContext(request.getContext());
@@ -98,7 +95,7 @@ public class ConfirmServiceSeller
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
             httpHeaders.remove("host");
 
-            respBody.setMessage(onStatus);
+            respBody.setMessage(onConfirm);
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
             String host = httpHeaders.get("remoteHost").get(0);
