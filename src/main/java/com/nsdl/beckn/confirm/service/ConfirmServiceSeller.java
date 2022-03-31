@@ -4,6 +4,11 @@
 
 package com.nsdl.beckn.confirm.service;
 
+import com.nsdl.beckn.api.model.onconfirm.OnConfirmMessage;
+import com.nsdl.beckn.api.model.onconfirm.OnConfirmRequest;
+import com.nsdl.beckn.api.model.onstatus.OnStatusMessage;
+import com.nsdl.beckn.api.model.onstatus.OnStatusRequest;
+import com.nsdl.beckn.status.service.StatusServiceSeller;
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +18,7 @@ import com.nsdl.beckn.api.model.common.Ack;
 import com.nsdl.beckn.api.enums.AckStatus;
 import com.nsdl.beckn.api.model.response.ResponseMessage;
 import com.nsdl.beckn.api.model.response.Response;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.nsdl.beckn.confirm.extension.Schema;
@@ -22,6 +28,7 @@ import com.nsdl.beckn.common.validator.BodyValidator;
 import com.nsdl.beckn.common.service.ApplicationConfigService;
 import com.nsdl.beckn.common.sender.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -40,6 +47,10 @@ public class ConfirmServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
+
+    @Autowired
+    @Value("classpath:dummyResponses/onConfirm.json")
+    private Resource resource;
     
     public ResponseEntity<String> confirm(final HttpHeaders httpHeaders, final Schema request) throws JsonProcessingException {
         ConfirmServiceSeller.log.info("Going to validate json request before sending to buyer...");
@@ -53,7 +64,11 @@ public class ConfirmServiceSeller
         adaptorResponse.setMessage(resMsg);
         final Context ctx = request.getContext();
         adaptorResponse.setContext(ctx);
-        //CompletableFuture.runAsync(this::lambda$confirm$0);
+
+        CompletableFuture.runAsync(() -> {
+            this.sendRequestToSellerInternalApi(httpHeaders, request);
+        });
+
         return (ResponseEntity<String>)new ResponseEntity((Object)this.mapper.writeValueAsString((Object)adaptorResponse), HttpStatus.OK);
     }
     
@@ -65,7 +80,35 @@ public class ConfirmServiceSeller
             final ConfigModel configModel = this.configService.loadApplicationConfiguration(bppId, "confirm");
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
-            this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
+            //this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
+
+            if(!"true".equals(configModel.getDisableAdaptorCalls())){
+                String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
+                ConfirmServiceSeller.log.info("Response from ekart adaptor: " + resp);
+            }
+
+            //creating a dummy response
+            OnConfirmMessage onStatus = this.mapper.readValue(this.resource.getInputStream(), OnConfirmMessage.class);
+            ConfirmServiceSeller.log.info(onStatus.toString());
+
+            OnConfirmRequest respBody = new OnConfirmRequest();
+            respBody.setContext(request.getContext());
+            respBody.getContext().setAction("on_confirm");
+            respBody.getContext().setBppId(configModel.getSubscriberId());
+            respBody.getContext().setBppUri(configModel.getSubscriberUrl());
+            httpHeaders.remove("host");
+
+            respBody.setMessage(onStatus);
+            String respJson = this.jsonUtil.toJson((Object)respBody);
+
+            String host = httpHeaders.get("remoteHost").get(0);
+            if("0:0:0:0:0:0:0:1".equals(host)) {
+                host="localhost";
+            }
+
+            String onConfirmResp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_confirm",
+                    httpHeaders, respJson, configModel.getMatchedApi());
+            ConfirmServiceSeller.log.info(onConfirmResp);
         }
         catch (Exception e) {
             ConfirmServiceSeller.log.error("error while sending post request to seller internal api" + e);

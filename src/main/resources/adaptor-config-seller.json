@@ -48,8 +48,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": true,
-				"set_authorization_header": true
+				"header_authentication": false,
+				"set_authorization_header": false
 			},
 			{
 				"name": "init",
