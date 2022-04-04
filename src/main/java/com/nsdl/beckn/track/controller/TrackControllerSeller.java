@@ -52,13 +52,21 @@ public class TrackControllerSeller
     @Value("${beckn.entity.type}")
     private String entityType;
     
-    @PostMapping({ "/seller/adaptor/track" })
+    @PostMapping({ "/track" })
     public ResponseEntity<String> track(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
         TrackControllerSeller.log.info("The body in {} adaptor is {}", (Object)"track", (Object)this.jsonUtil.unpretty(body));
         TrackControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+
+        //Injecting remote client hostname to headers
+        httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
+        TrackControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
+
+
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);
         }
+
+
         final Schema model = (Schema)this.jsonUtil.toModel(body, (Class)Schema.class);
         final Context context = model.getContext();
         final String bapId = context.getBapId();
