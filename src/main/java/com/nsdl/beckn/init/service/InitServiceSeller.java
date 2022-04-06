@@ -10,9 +10,9 @@ import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.oninit.OnInitMessage;
 import com.nsdl.beckn.api.model.oninit.OnInitRequest;
-import com.nsdl.beckn.api.model.onsearch.OnSearchMessage;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.nsdl.beckn.api.enums.AckStatus;
 import com.nsdl.beckn.api.model.response.ResponseMessage;
@@ -20,8 +20,6 @@ import com.nsdl.beckn.api.model.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.nsdl.beckn.init.extension.Schema;
-import com.nsdl.beckn.search.extension.OnSchema;
-import com.nsdl.beckn.search.service.SearchServiceSeller;
 
 import org.springframework.http.HttpHeaders;
 import com.nsdl.beckn.common.util.JsonUtil;
@@ -148,27 +146,12 @@ public class InitServiceSeller
     }
 
     private Quotation getQuote(OnInitMessage onInitMessage){
-        Price price = new Price();
-        price.setCurrency("INR");
-        price.setValue(getValue(onInitMessage.getOrder()));
         return Quotation.builder()
-                        .price(price)
+                        .price(calculatePrice(onInitMessage.getOrder()))
                         .build();
 
     }
-    private float getValue(Order order){
-        float ans;
-        float con1=10*order.getItems().size();
-        String x1=order.getFulfillment().getStart().getLocation().getGps();
-        String x2=order.getFulfillment().getEnd().getLocation().getGps();
-      //  double dis;
-        //x1=1;y1=1;x2=4;y2=4;
-       // dis=Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
-       // float con2=
 
-        return con1;
-
-    }
     private Payment getPaymentInfo(OnInitMessage onInitMessage){
 
         return Payment.builder()
@@ -186,6 +169,22 @@ public class InitServiceSeller
                 .mode("upi")
                 .vpa("fk@upi")
                 .build();
+    }
+
+    private Price calculatePrice(Order order){
+        Price price = new Price();
+        price.setCurrency("INR");
+        AtomicReference<Float> totalPrice = new AtomicReference<>((float) 0);
+        order.getItems().forEach((item) -> {
+            totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*10);
+        });
+        totalPrice.set(totalPrice.get()*getDistanceMultiplier(order.getFulfillment()));
+        price.setValue(totalPrice.get());
+        return price;
+    }
+
+    private float getDistanceMultiplier(Fulfillment fulfillment){
+        return 1;
     }
 
 
