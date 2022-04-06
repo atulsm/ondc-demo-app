@@ -4,6 +4,8 @@
 
 package com.nsdl.beckn.api.model.track;
 
+ import com.nsdl.beckn.api.model.track.TrackMessage;
+
 import com.nsdl.beckn.api.model.common.Context;
 
 public class TrackRequest

@@ -4,12 +4,15 @@
 
 package com.nsdl.beckn.track.service;
 
+import lombok.Builder;
+
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.common.Context;
 import com.nsdl.beckn.api.model.ontrack.OnTrackMessage;
 import com.nsdl.beckn.api.model.ontrack.OnTrackRequest;
+import com.nsdl.beckn.api.model.common.Tracking;
 
 import java.util.concurrent.CompletableFuture;
 import com.nsdl.beckn.api.model.common.Ack;
@@ -87,8 +90,8 @@ public class TrackServiceSeller
             }
 
             //creating a dummy response
-            OnTrackMessage onTrack = this.mapper.readValue(this.resource.getInputStream(), OnTrackMessage.class);
-            TrackServiceSeller.log.info(onTrack.toString());
+       //     OnTrackMessage onTrack = this.mapper.readValue(this.resource.getInputStream(), OnTrackMessage.class);
+         //   TrackServiceSeller.log.info(onTrack.toString());
 
             OnTrackRequest respBody = new OnTrackRequest();
             respBody.setContext(request.getContext());
@@ -97,7 +100,7 @@ public class TrackServiceSeller
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
             httpHeaders.remove("host");
 
-            respBody.setMessage(onTrack);
+            respBody.setMessage(createResponseMessage(request));
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
             String host = httpHeaders.get("remoteHost").get(0);
@@ -114,7 +117,23 @@ public class TrackServiceSeller
             e.printStackTrace();
         }
     }
-    
+    private OnTrackMessage createResponseMessage(final Schema request){
+        OnTrackMessage onTrack =new OnTrackMessage();
+        onTrack.setTracking(createTrackingInfo(request));
+        return onTrack;
+    }
+    private Tracking createTrackingInfo(final Schema request){
+
+        return Tracking.builder()
+                .status("active")
+                .url(getString(request))
+                .build();
+
+    }
+    private String getString(final Schema request){
+
+        return "https://track.mock_bpp.com?order_id="+request.getMessage().getOrderId();
+    }
     static {
         log = LoggerFactory.getLogger((Class)TrackServiceSeller.class);
     }
