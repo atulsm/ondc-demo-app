@@ -21,7 +21,7 @@ public class OrderStateService {
 
     public static String getOrderState(long orderTime){
         long currentTime = System.currentTimeMillis()/1000L;
-        long diff = currentTime -orderTime;
+        long diff = currentTime - orderTime;
         if(diff <= 10) return "SEARCHING-FOR-FMD-AGENT";
         if(diff <= 20) return "ASSIGNED-AGENT";
         if(diff <= 30) return "AT-PICKUP-LOCATION";
