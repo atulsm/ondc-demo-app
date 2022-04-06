@@ -4,6 +4,9 @@
 
 package com.nsdl.beckn.api.model.common;
 
+import lombok.Builder;
+
+@Builder
 public class Tracking
 {
     private String url;

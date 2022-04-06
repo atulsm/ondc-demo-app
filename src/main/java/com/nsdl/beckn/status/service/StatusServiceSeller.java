@@ -4,6 +4,7 @@
 
 package com.nsdl.beckn.status.service;
 
+import com.nsdl.beckn.common.service.OrderStateService;
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,6 +58,9 @@ public class StatusServiceSeller
     @Autowired
     @Value("classpath:dummyResponses/onStatus.json")
     private Resource resource;
+
+    @Autowired
+    private OrderStateService orderStateService;
     
     public ResponseEntity<String> status(final HttpHeaders httpHeaders, final Schema request) throws JsonProcessingException {
         StatusServiceSeller.log.info("Going to validate json request before sending to buyer...");
@@ -93,7 +97,7 @@ public class StatusServiceSeller
             }
 
             //creating a dummy response
-            OnStatusMessage onStatus = this.mapper.readValue(this.resource.getInputStream(), OnStatusMessage.class);
+            OnStatusMessage onStatus = createOnStatusMessage(request);
             StatusServiceSeller.log.info(onStatus.toString());
 
             OnStatusRequest respBody = new OnStatusRequest();
@@ -119,6 +123,13 @@ public class StatusServiceSeller
             StatusServiceSeller.log.error("error while sending post request to seller internal api" + e);
             e.printStackTrace();
         }
+    }
+
+    private OnStatusMessage createOnStatusMessage(final Schema request){
+        //OnStatusMessage onStatus = this.mapper.readValue(this.resource.getInputStream(), OnStatusMessage.class);
+        OnStatusMessage onStatus = new OnStatusMessage();
+        onStatus.setOrder(orderStateService.getOrder(request.getMessage().getOrderId()));
+        return onStatus;
     }
     
     static {
