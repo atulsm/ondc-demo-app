@@ -4,8 +4,11 @@
 
 package com.nsdl.beckn.api.model.common;
 
+import lombok.Builder;
+
 import java.util.List;
 
+@Builder
 public class Quotation
 {
     private Price price;

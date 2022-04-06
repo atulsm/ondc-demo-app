@@ -4,16 +4,16 @@
 
 package com.nsdl.beckn.init.service;
 
+import com.nsdl.beckn.api.model.common.*;
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nsdl.beckn.api.model.common.Context;
 import com.nsdl.beckn.api.model.oninit.OnInitMessage;
 import com.nsdl.beckn.api.model.oninit.OnInitRequest;
 import com.nsdl.beckn.api.model.onsearch.OnSearchMessage;
 
 import java.util.concurrent.CompletableFuture;
-import com.nsdl.beckn.api.model.common.Ack;
+
 import com.nsdl.beckn.api.enums.AckStatus;
 import com.nsdl.beckn.api.model.response.ResponseMessage;
 import com.nsdl.beckn.api.model.response.Response;
@@ -102,10 +102,7 @@ public class InitServiceSeller
                 String resp = this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
                 InitServiceSeller.log.info("Response from ekart adaptor: " + resp);
             }
-            
-            //creating a dummy response
-            OnInitMessage onInit = this.mapper.readValue(this.resource.getInputStream(), OnInitMessage.class);
-            
+
             OnInitRequest respBody = new OnInitRequest();
             respBody.setContext(request.getContext());
             respBody.getContext().setAction("on_init");
@@ -113,7 +110,7 @@ public class InitServiceSeller
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
             httpHeaders.remove("host");
 
-            respBody.setMessage(onInit);
+            respBody.setMessage(createResponseMessage(request));
             String respJson = this.jsonUtil.toJson((Object)respBody);
             InitServiceSeller.log.info(respJson);
             InitServiceSeller.log.info(httpHeaders.toString());
@@ -135,6 +132,44 @@ public class InitServiceSeller
             e.printStackTrace();
         }
     }
+
+    private OnInitMessage createResponseMessage(final Schema request){
+        OnInitMessage onInit  = new OnInitMessage();
+
+        //creating a dummy response
+        //OnInitMessage onInit = this.mapper.readValue(this.resource.getInputStream(), OnInitMessage.class);
+
+        onInit.setOrder(request.getMessage().getOrder());
+        onInit.getOrder().setQuote(getQuote(onInit));
+        onInit.getOrder().setPayment(getPaymentInfo(onInit));
+
+       return onInit;
+
+    }
+
+    private Quotation getQuote(OnInitMessage onInitMessage){
+        return null;
+    }
+
+    private Payment getPaymentInfo(OnInitMessage onInitMessage){
+
+        return Payment.builder()
+                .status("NOT-PAID")
+                .tlMethod("http/get")
+                .type( "ON-FULFILMENT")
+                .uri("https://api.bpp.com/pay?amt=$180&mode=upi&vpa=bpp@upi")
+                .params(getPaymentParams(onInitMessage.getOrder().getQuote().getPrice()))
+                .build();
+    }
+
+    private PaymentParams getPaymentParams(Price price){
+        return PaymentParams.builder()
+                .amount(Float.toString(price.getValue()))
+                .mode("upi")
+                .vpa("fk@upi")
+                .build();
+    }
+
     
     static {
         log = LoggerFactory.getLogger((Class)InitServiceSeller.class);
