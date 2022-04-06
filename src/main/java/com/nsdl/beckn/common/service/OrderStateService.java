@@ -44,12 +44,12 @@ public class OrderStateService {
     private static String getOrderState(long orderTime){
         long currentTime = System.currentTimeMillis()/1000L;
         long diff = currentTime - orderTime;
-        if(diff <= 25) return "SEARCHING-FOR-FMD-AGENT";
-        if(diff <= 50) return "ASSIGNED-AGENT";
-        if(diff <= 75) return "AT-PICKUP-LOCATION";
-        if(diff <= 100) return "EN-ROUTE-TO-DROP";
-        if(diff <= 125) return "AT-DROP-LOCATION";
-        if(diff <= 150) return "DROPPED-PACKAGE";
+        if(diff <= 35) return "SEARCHING-FOR-FMD-AGENT";
+        if(diff <= 70) return "ASSIGNED-AGENT";
+        if(diff <= 105) return "AT-PICKUP-LOCATION";
+        if(diff <= 140) return "EN-ROUTE-TO-DROP";
+        if(diff <= 175) return "AT-DROP-LOCATION";
+        if(diff <= 210) return "DROPPED-PACKAGE";
         return "COMPLETE";
 
     }
