@@ -178,9 +178,13 @@ public class InitServiceSeller
         order.getItems().forEach((item) -> {
             totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*10);
         });
-
+        totalPrice.set(totalPrice.get()*getDistanceMultiplier(order.getFulfillment()));
         price.setValue(totalPrice.get());
         return price;
+    }
+
+    private float getDistanceMultiplier(Fulfillment fulfillment){
+        return 1;
     }
 
 
