@@ -150,13 +150,25 @@ public class InitServiceSeller
     private Quotation getQuote(OnInitMessage onInitMessage){
         Price price = new Price();
         price.setCurrency("INR");
-        price.setValue(12345);
+        price.setValue(getValue(onInitMessage.getOrder()));
         return Quotation.builder()
                         .price(price)
                         .build();
 
     }
+    private float getValue(Order order){
+        float ans;
+        float con1=10*order.getItems().size();
+        String x1=order.getFulfillment().getStart().getLocation().getGps();
+        String x2=order.getFulfillment().getEnd().getLocation().getGps();
+      //  double dis;
+        //x1=1;y1=1;x2=4;y2=4;
+       // dis=Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+       // float con2=
 
+        return con1;
+
+    }
     private Payment getPaymentInfo(OnInitMessage onInitMessage){
 
         return Payment.builder()
