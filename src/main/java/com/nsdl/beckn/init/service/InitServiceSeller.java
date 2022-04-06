@@ -178,7 +178,7 @@ public class InitServiceSeller
         order.getItems().forEach((item) -> {
             totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*10);
         });
-        totalPrice.set(totalPrice.get()+7*getDistanceMultiplier(order.getFulfillment()));
+        totalPrice.set(totalPrice.get()*getDistanceMultiplier(order.getFulfillment()));
         price.setValue(totalPrice.get());
         return price;
     }
