@@ -178,13 +178,43 @@ public class InitServiceSeller
         order.getItems().forEach((item) -> {
             totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*10);
         });
-        totalPrice.set(totalPrice.get()*getDistanceMultiplier(order.getFulfillment()));
+        totalPrice.set(totalPrice.get()+7*getDistanceMultiplier(order.getFulfillment()));
         price.setValue(totalPrice.get());
         return price;
     }
 
     private float getDistanceMultiplier(Fulfillment fulfillment){
-        return 1;
+        String x1=fulfillment.getStart().getLocation().getGps();
+        String x2=fulfillment.getEnd().getLocation().getGps();
+        double lat1,lat2,lon1,lon2;
+        int i;
+        for(i=0;i<x1.length();i++){
+            if(x1.charAt(i)==','){
+                break;
+            }
+        }
+        lat1=Double.parseDouble(x1.substring(0,i-1));
+        lon1=Double.parseDouble(x1.substring(i+1));
+        for(i=0;i<x2.length();i++){
+            if(x2.charAt(i)==','){
+                break;
+            }
+        }
+        lat2=Double.parseDouble(x2.substring(0,i-1));
+        lon2=Double.parseDouble(x2.substring(i+1));
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c; // convert to meters
+
+        distance = Math.pow(distance, 2);
+
+        return (float)distance;
     }
 
 
