@@ -148,7 +148,13 @@ public class InitServiceSeller
     }
 
     private Quotation getQuote(OnInitMessage onInitMessage){
-        return null;
+        Price price = new Price();
+        price.setCurrency("INR");
+        price.setValue(12345);
+        return Quotation.builder()
+                        .price(price)
+                        .build();
+
     }
 
     private Payment getPaymentInfo(OnInitMessage onInitMessage){
@@ -169,6 +175,7 @@ public class InitServiceSeller
                 .vpa("fk@upi")
                 .build();
     }
+
 
     
     static {

@@ -6,6 +6,7 @@ package com.nsdl.beckn.confirm.service;
 
 import com.nsdl.beckn.api.model.onconfirm.OnConfirmMessage;
 import com.nsdl.beckn.api.model.onconfirm.OnConfirmRequest;
+import com.nsdl.beckn.common.service.OrderStateService;
 import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,6 +51,9 @@ public class ConfirmServiceSeller
     @Autowired
     @Value("classpath:dummyResponses/onConfirm.json")
     private Resource resource;
+
+    @Autowired
+    private OrderStateService orderStateService;
     
     public ResponseEntity<String> confirm(final HttpHeaders httpHeaders, final Schema request) throws JsonProcessingException {
         ConfirmServiceSeller.log.info("Going to validate json request before sending to buyer...");
@@ -117,9 +121,10 @@ public class ConfirmServiceSeller
     private OnConfirmMessage createResponseMessage(final Schema request){
         OnConfirmMessage onConfirm =new OnConfirmMessage();
         onConfirm.setOrder(request.getMessage().getOrder());
-        onConfirm.getOrder().setState("Assigned-Agent");
+        onConfirm.getOrder().setState("SEARCHING-FOR-FMD-AGENT");
         String uniqueID = UUID.randomUUID().toString();
         onConfirm.getOrder().setId(uniqueID);
+        orderStateService.addOrder(onConfirm.getOrder());
         return onConfirm;
     }
     static {
