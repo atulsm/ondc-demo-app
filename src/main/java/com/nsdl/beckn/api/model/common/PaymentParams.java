@@ -5,7 +5,9 @@
 package com.nsdl.beckn.api.model.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
+@Builder
 public class PaymentParams
 {
     private String transactionId;
