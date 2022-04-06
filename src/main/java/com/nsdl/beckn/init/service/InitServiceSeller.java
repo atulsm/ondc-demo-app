@@ -175,8 +175,10 @@ public class InitServiceSeller
         Price price = new Price();
         price.setCurrency("INR");
         AtomicReference<Float> totalPrice = new AtomicReference<>((float) 0);
+        final float distanceMultiplier = getDistanceMultiplier(order.getFulfillment());
+        final float perItemPrice = 10;
         order.getItems().forEach((item) -> {
-            totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*10);
+            totalPrice.set(totalPrice.get() + item.getQuantity().getCount()*perItemPrice*distanceMultiplier);
         });
         totalPrice.set(totalPrice.get()*getDistanceMultiplier(order.getFulfillment()));
         price.setValue(totalPrice.get());
@@ -184,11 +186,36 @@ public class InitServiceSeller
     }
 
     private float getDistanceMultiplier(Fulfillment fulfillment){
-        return 1;
+        String startingCoordinate = fulfillment.getStart().getLocation().getGps();
+        String endCoordinate = fulfillment.getEnd().getLocation().getGps();
+
+        String stPoints[] = startingCoordinate.split(",");
+        String enPoints[] = endCoordinate.split(",");
+
+        double lat1,lat2,lon1,lon2;
+
+        lat1=Double.parseDouble(stPoints[0]);
+        lon1=Double.parseDouble(stPoints[1]);
+        lat2=Double.parseDouble(enPoints[0]);
+        lon2=Double.parseDouble(enPoints[1]);
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c; // convert to meters
+
+        distance = Math.pow(distance, 2);
+
+        float multiplier =(float) Math.max(100.0, Math.cbrt(distance/2));
+        return Math.min(1, multiplier);
+
     }
 
-
-    
     static {
         log = LoggerFactory.getLogger((Class)InitServiceSeller.class);
     }
