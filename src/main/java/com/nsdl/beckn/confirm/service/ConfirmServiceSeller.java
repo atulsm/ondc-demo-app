@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.common.Context;
+
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import com.nsdl.beckn.api.model.common.Ack;
 import com.nsdl.beckn.api.enums.AckStatus;
@@ -85,8 +87,8 @@ public class ConfirmServiceSeller
             }
 
             //creating a dummy response
-            OnConfirmMessage onConfirm = this.mapper.readValue(this.resource.getInputStream(), OnConfirmMessage.class);
-            ConfirmServiceSeller.log.info(onConfirm.toString());
+      //      OnConfirmMessage onConfirm = this.mapper.readValue(this.resource.getInputStream(), OnConfirmMessage.class);
+        //    ConfirmServiceSeller.log.info(onConfirm.toString());
 
             OnConfirmRequest respBody = new OnConfirmRequest();
             respBody.setContext(request.getContext());
@@ -95,7 +97,7 @@ public class ConfirmServiceSeller
             respBody.getContext().setBppUri(configModel.getSubscriberUrl());
             httpHeaders.remove("host");
 
-            respBody.setMessage(onConfirm);
+            respBody.setMessage(createResponseMessage(request));
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
             String host = httpHeaders.get("remoteHost").get(0);
@@ -112,7 +114,14 @@ public class ConfirmServiceSeller
             e.printStackTrace();
         }
     }
-    
+    private OnConfirmMessage createResponseMessage(final Schema request){
+        OnConfirmMessage onConfirm =new OnConfirmMessage();
+        onConfirm.setOrder(request.getMessage().getOrder());
+        onConfirm.getOrder().setState("Assigned-Agent");
+        String uniqueID = UUID.randomUUID().toString();
+        onConfirm.getOrder().setId(uniqueID);
+        return onConfirm;
+    }
     static {
         log = LoggerFactory.getLogger((Class)ConfirmServiceSeller.class);
     }
