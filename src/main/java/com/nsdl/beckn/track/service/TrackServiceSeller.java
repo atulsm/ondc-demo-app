@@ -132,7 +132,7 @@ public class TrackServiceSeller
     }
     private String getString(final Schema request){
 
-        return "https://track.mock_bpp.com?order_id="+request.getMessage().getOrderId();
+        return "https://localhost/views/track_page.html/?order_id="+request.getMessage().getOrderId();
     }
     static {
         log = LoggerFactory.getLogger((Class)TrackServiceSeller.class);
