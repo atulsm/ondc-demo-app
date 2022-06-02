@@ -7,7 +7,7 @@
 		"disable_adaptor_calls": "false",
 		"whitelist_baps": "https://api-testing.phonepe.com/apis/osmos/logistics/,sandbox.hitbyseo.com/delivery/bap,https://mock_bap.com/",
 		"signing": {
-			"certificate_used": false,
+			"certificate_used": true,
 			"certificate_type": "",
 			"certificate_alias": "",
 			"certificate_path": "",
