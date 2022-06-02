@@ -92,7 +92,7 @@ public class InitServiceSeller
     private void sendRequestToSellerInternalApi(final HttpHeaders httpHeaders, final Schema request) {
     	InitServiceSeller.log.info("sending request to seller internal api [in seperate thread]");
         try {
-            final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "search");
+            final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "init");
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
             
