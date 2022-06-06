@@ -21,8 +21,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": false,
-				"set_authorization_header": false
+				"header_authentication": true,
+				"set_authorization_header": true
 			},
 			{
 				"name": "select",
@@ -48,8 +48,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": false,
-				"set_authorization_header": false
+				"header_authentication": true,
+				"set_authorization_header": true
 			},
 			{
 				"name": "init",
@@ -57,8 +57,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": false,
-				"set_authorization_header": false
+				"header_authentication": true,
+				"set_authorization_header": true
 			},
 			{
 				"name": "rating",
@@ -93,8 +93,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": false,
-				"set_authorization_header": false
+				"header_authentication": true,
+				"set_authorization_header": true
 			},
 			{
 				"name": "update",
