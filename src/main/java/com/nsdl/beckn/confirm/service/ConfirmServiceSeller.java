@@ -115,8 +115,12 @@ public class ConfirmServiceSeller
             }
 
             final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);
+            String toUrl = respBody.getContext().getBapUri();
+            if(!toUrl.endsWith("/")) {
+            	toUrl = toUrl+"/";
+            }
             
-            String onConfirmResp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_confirm",
+            String onConfirmResp = this.sendRequest.send(toUrl +"on_confirm",
             		headers, respJson, configModel.getMatchedApi());
             ConfirmServiceSeller.log.info(onConfirmResp);
         }

@@ -7,6 +7,8 @@ package com.nsdl.beckn.track.service;
 import lombok.Builder;
 
 import org.slf4j.LoggerFactory;
+
+import com.nsdl.beckn.common.builder.HeaderBuilder;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.common.Context;
@@ -50,6 +52,9 @@ public class TrackServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
+    
+    @Autowired
+    private HeaderBuilder authHeaderBuilder;
 
     @Autowired
     @Value("classpath:dummyResponses/onTrack.json")
@@ -103,13 +108,14 @@ public class TrackServiceSeller
             respBody.setMessage(createResponseMessage(request));
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
-            String host = httpHeaders.get("remoteHost").get(0);
-            if("0:0:0:0:0:0:0:1".equals(host)) {
-                host="localhost";
+            final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);
+            String toUrl = respBody.getContext().getBapUri();
+            if(!toUrl.endsWith("/")) {
+            	toUrl = toUrl+"/";
             }
 
-            String onTrackresp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_track",
-                    httpHeaders, respJson, configModel.getMatchedApi());
+            String onTrackresp = this.sendRequest.send(toUrl +"on_track",
+            		headers, respJson, configModel.getMatchedApi());
             TrackServiceSeller.log.info(onTrackresp);
         }
         catch (Exception e) {
