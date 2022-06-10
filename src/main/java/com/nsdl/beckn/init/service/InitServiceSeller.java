@@ -6,6 +6,8 @@ package com.nsdl.beckn.init.service;
 
 import com.nsdl.beckn.api.model.common.*;
 import org.slf4j.LoggerFactory;
+
+import com.nsdl.beckn.common.builder.HeaderBuilder;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.oninit.OnInitMessage;
@@ -49,6 +51,10 @@ public class InitServiceSeller
     @Autowired
     private JsonUtil jsonUtil;
     
+    
+    @Autowired
+    private HeaderBuilder authHeaderBuilder;
+    
     @Autowired
     @Value("classpath:dummyResponses/onInit.json")
     private Resource resource;
@@ -71,22 +77,6 @@ public class InitServiceSeller
          });
         
         return (ResponseEntity<String>)new ResponseEntity((Object)this.mapper.writeValueAsString((Object)adaptorResponse), HttpStatus.OK);
-    }
-    
-    private void sendRequestToSellerInternalApi_old(final HttpHeaders httpHeaders, final Schema request) {
-        InitServiceSeller.log.info("sending request to seller internal api [in seperate thread]");
-        try {
-            final Context context = request.getContext();
-            final String bppId = context.getBppId();
-            final ConfigModel configModel = this.configService.loadApplicationConfiguration(bppId, "init");
-            final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
-            final String json = this.jsonUtil.toJson((Object)request);
-            this.sendRequest.send(url, httpHeaders, json, configModel.getMatchedApi());
-        }
-        catch (Exception e) {
-            InitServiceSeller.log.error("error while sending post request to seller internal api" + e);
-            e.printStackTrace();
-        }
     }
     
     private void sendRequestToSellerInternalApi(final HttpHeaders httpHeaders, final Schema request) {
@@ -119,8 +109,10 @@ public class InitServiceSeller
             	host="localhost";
             }
             
+            final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);            
+            
             String onSearchresp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_init", 
-            		httpHeaders, respJson, configModel.getMatchedApi());
+            		headers, respJson, configModel.getMatchedApi());
             InitServiceSeller.log.info(onSearchresp);
 
             

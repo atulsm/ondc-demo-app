@@ -75,7 +75,7 @@ public class InitControllerSeller
         InitControllerSeller.log.info("does buyer {} requires to be authenticated ? {}", (Object)bapId, (Object)authenticate);
         if (authenticate) {
             final LookupRequest lookupRequest = new LookupRequest((String)null, context.getCountry(), context.getCity(), context.getDomain(), BecknUserType.BAP.type());
-            this.validator.validateHeader(bppId, httpHeaders, body, lookupRequest);
+            this.validator.validateHeader(bapId, httpHeaders, body, lookupRequest);
         }
         this.auditService.audit(this.buildAuditModel(httpHeaders, body, model));
         return (ResponseEntity<String>)this.service.init(httpHeaders, model);

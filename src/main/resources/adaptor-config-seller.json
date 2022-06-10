@@ -17,7 +17,7 @@
 		"api": [
 			{
 				"name": "search",
-				"http_entity_endpoint": "http://localhost:8089/search/v1",
+				"http_entity_endpoint": "http://3.111.199.126:8089/search/v1",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
@@ -49,7 +49,7 @@
 				"http_retry_count": 0,
 				"header_validity": 600000,
 				"header_authentication": false,
-				"set_authorization_header": false
+				"set_authorization_header": true
 			},
 			{
 				"name": "init",
@@ -58,7 +58,7 @@
 				"http_retry_count": 0,
 				"header_validity": 600000,
 				"header_authentication": false,
-				"set_authorization_header": false
+				"set_authorization_header": true
 			},
 			{
 				"name": "rating",
@@ -66,7 +66,7 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": true,
+				"header_authentication": false,
 				"set_authorization_header": true
 			},
 			{
@@ -75,8 +75,8 @@
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
-				"header_authentication": false,
-				"set_authorization_header": false
+				"header_authentication": true,
+				"set_authorization_header": true
 			},
 			{
 				"name": "support",
@@ -94,7 +94,7 @@
 				"http_retry_count": 0,
 				"header_validity": 600000,
 				"header_authentication": false,
-				"set_authorization_header": false
+				"set_authorization_header": true
 			},
 			{
 				"name": "update",
