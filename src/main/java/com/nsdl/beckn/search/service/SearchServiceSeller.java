@@ -103,12 +103,7 @@ public class SearchServiceSeller
             respBody.setMessage(onSearch);
             String respJson = this.jsonUtil.toJson((Object)respBody);
 
-            String host = httpHeaders.get("remoteHost").get(0);
-            if("0:0:0:0:0:0:0:1".equals(host)) {
-            	host="localhost";
-            }else {
-            	host = configModel.getBecknGateway();
-            }
+            String host = configModel.getBecknGateway();
             
             final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);            
             String onSearchresp = this.sendRequest.send("https://" +host +"/on_search", 

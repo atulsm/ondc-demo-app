@@ -50,8 +50,7 @@ public class InitServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
-    
-    
+        
     @Autowired
     private HeaderBuilder authHeaderBuilder;
     
@@ -82,7 +81,7 @@ public class InitServiceSeller
     private void sendRequestToSellerInternalApi(final HttpHeaders httpHeaders, final Schema request) {
     	InitServiceSeller.log.info("sending request to seller internal api [in seperate thread]");
         try {
-            final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "search");
+            final ConfigModel configModel = this.configService.loadApplicationConfiguration(request.getContext().getBppId(), "init");
             final String url = configModel.getMatchedApi().getHttpEntityEndpoint();
             final String json = this.jsonUtil.toJson((Object)request);
             
@@ -110,8 +109,12 @@ public class InitServiceSeller
             }
             
             final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);            
+            String toUrl = respBody.getContext().getBapUri();
+            if(!toUrl.endsWith("/")) {
+            	toUrl = toUrl+"/";
+            }
             
-            String onSearchresp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_init", 
+            String onSearchresp = this.sendRequest.send(toUrl +"on_init", 
             		headers, respJson, configModel.getMatchedApi());
             InitServiceSeller.log.info(onSearchresp);
 

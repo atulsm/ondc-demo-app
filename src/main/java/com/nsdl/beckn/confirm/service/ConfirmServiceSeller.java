@@ -8,6 +8,8 @@ import com.nsdl.beckn.api.model.onconfirm.OnConfirmMessage;
 import com.nsdl.beckn.api.model.onconfirm.OnConfirmRequest;
 import com.nsdl.beckn.common.service.OrderStateService;
 import org.slf4j.LoggerFactory;
+
+import com.nsdl.beckn.common.builder.HeaderBuilder;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.common.Context;
@@ -47,7 +49,10 @@ public class ConfirmServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
-
+    
+    @Autowired
+    private HeaderBuilder authHeaderBuilder;
+    
     @Autowired
     @Value("classpath:dummyResponses/onConfirm.json")
     private Resource resource;
@@ -109,8 +114,10 @@ public class ConfirmServiceSeller
                 host="localhost";
             }
 
+            final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);
+            
             String onConfirmResp = this.sendRequest.send(respBody.getContext().getBapUri() +"on_confirm",
-                    httpHeaders, respJson, configModel.getMatchedApi());
+            		headers, respJson, configModel.getMatchedApi());
             ConfirmServiceSeller.log.info(onConfirmResp);
         }
         catch (Exception e) {
