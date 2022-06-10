@@ -5,6 +5,8 @@
 package com.nsdl.beckn.search.service;
 
 import org.slf4j.LoggerFactory;
+
+import com.nsdl.beckn.common.builder.HeaderBuilder;
 import com.nsdl.beckn.common.model.ConfigModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nsdl.beckn.api.model.common.Context;
@@ -49,6 +51,10 @@ public class SearchServiceSeller
     private BodyValidator bodyValidator;
     @Autowired
     private JsonUtil jsonUtil;
+    
+    @Autowired
+    private HeaderBuilder authHeaderBuilder;
+
     
     @Autowired
     @Value("classpath:dummyResponses/onSearch.json")
@@ -104,8 +110,9 @@ public class SearchServiceSeller
             	host = configModel.getBecknGateway();
             }
             
+            final HttpHeaders headers = this.authHeaderBuilder.buildHeaders(respJson, configModel);            
             String onSearchresp = this.sendRequest.send("https://" +host +"/on_search", 
-            		httpHeaders, respJson, configModel.getMatchedApi());
+            		headers, respJson, configModel.getMatchedApi());
             SearchServiceSeller.log.info(onSearchresp);
 
             

@@ -53,8 +53,7 @@ public class HeaderBuilder
         digest.update(test, 0, test.length);
         final byte[] hash = new byte[digest.getDigestSize()];
         digest.doFinal(hash, 0);
-        final String hex = Hex.toHexString(hash);
-        return Base64.getUrlEncoder().encodeToString(hex.getBytes());
+        return Base64.getEncoder().encodeToString(hash);
     }
     
     static {

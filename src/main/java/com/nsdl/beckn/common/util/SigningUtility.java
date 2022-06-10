@@ -4,39 +4,82 @@
 
 package com.nsdl.beckn.common.util;
 
-import org.slf4j.LoggerFactory;
-import java.util.Enumeration;
-import java.io.InputStream;
 import java.io.FileInputStream;
+import java.security.KeyFactory;
 import java.security.KeyStore;
-import org.bouncycastle.util.encoders.Hex;
-import org.bouncycastle.crypto.digests.Blake2bDigest;
-import com.nsdl.beckn.common.model.HeaderParams;
-import com.nsdl.beckn.common.dto.KeyIdDto;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.security.PublicKey;
-import java.security.spec.KeySpec;
-import java.security.KeyFactory;
-import java.security.spec.X509EncodedKeySpec;
-import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
-import java.security.PrivateKey;
+
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.signers.Ed25519Signer;
+import org.bouncycastle.crypto.digests.Blake2bDigest;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
+import org.bouncycastle.crypto.signers.Ed25519Signer;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import com.nsdl.beckn.GeneratePayloadClTest;
+import com.nsdl.beckn.common.dto.KeyIdDto;
 import com.nsdl.beckn.common.exception.ApplicationException;
 import com.nsdl.beckn.common.exception.ErrorCode;
-import org.apache.commons.lang3.StringUtils;
-import java.util.Base64;
-import java.security.Signature;
+import com.nsdl.beckn.common.model.HeaderParams;
 import com.nsdl.beckn.common.model.SigningModel;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SigningUtility
 {
     private static final Logger log;
+    
+	public static void setup() {
+		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+			Security.addProvider(new BouncyCastleProvider());
+			System.out.println(Security.addProvider(new BouncyCastleProvider()));
+		}
+	}
+    
+    public static void main(String[] args) throws Exception{
+    	setup();
+    	
+		String req = "{\"context\":{\"domain\":\"nic2004:60232\",\"country\":\"IND\",\"city\":\"std:080\",\"action\":\"on_search\",\"core_version\":\"0.9.2\",\"bap_id\":\"sandbox.hitbyseo.com/delivery/bap\",\"bap_uri\":\"https://sandbox.hitbyseo.com/delivery/bap/\",\"bpp_id\":\"flipkart.logistics.test\",\"bpp_uri\":\"https://3.111.199.126/\",\"transaction_id\":\"12387917398173\",\"message_id\":\"string\",\"timestamp\":\"2021-03-22T05:48:04.938Z\",\"key\":\"string\",\"ttl\":\"string\"},\"message\":{\"catalog\":{\"bpp/descriptor\":{\"name\":\"Flipkart Ekart\"},\"bpp/providers\":[{\"id\":\"flipkart.logistics.test\",\"descriptor\":{\"name\":\"Flipkart Ekart\"},\"categories\":[{\"id\":\"standard-delivery\",\"descriptor\":{\"name\":\"Standard Delivery\"}}],\"items\":[{\"id\":\"standard-document-delivery\",\"descriptor\":{\"name\":\"Standard Document Delivery\",\"images\":[\"https://ekartlogistics.com/assets/images/ekWhiteLogo.png\"]},\"price\":{\"currency\":\"INR\",\"value\":100.0,\"estimated_value\":0.0,\"computed_value\":0.0,\"listed_value\":0.0,\"offered_value\":0.0,\"minimum_value\":0.0,\"maximum_value\":0.0},\"category_id\":\"standard-delivery\",\"matched\":true,\"related\":false,\"recommended\":false}]}]}}}";
+		
+		SigningUtility test = new SigningUtility();
+		String blakeValue = test.generateBlakeHash(req);
+		System.out.println(blakeValue);
+		
+		blakeValue = GeneratePayloadClTest.generateBlakeHash(req);
+		System.out.println(blakeValue);
+		
+		//String signingString = "(created): " + testTimestamp + "\n(expires): " + (testTimestamp + 60000)
+		//		+ "\ndigest: BLAKE-512=" + blakeValue + "";
+		//String signedReq = generateSignature(signingString, privateKey);
+		
+		long currentTime = 1654872905;
+		System.out.println(currentTime);
+
+		
+        final String signingString = "(created): " + currentTime + "\n(expires): " + (currentTime + 60000) + "\ndigest: BLAKE-512=" + blakeValue + "";
+		System.out.println(signingString);
+
+		SigningModel model = new SigningModel();
+		model.setPrivateKey("iW0nGZ2mbeeiz/Khd+X2RDtrXdf7k1XYv0j0rbEsoMwZOGnCFrW6XeCY6mzgWZmDNOzuvNC5/ekCENWPB84gnw==");
+		
+        String signedReq = test.generateSignature(signingString, model);
+		System.out.println(signedReq);
+
+
+
+
+	}
     
     public String generateSignature(final String req, final SigningModel model) {
         String sign = null;
@@ -56,7 +99,7 @@ public class SigningUtility
                 }
                 final Ed25519PrivateKeyParameters privateKey2 = new Ed25519PrivateKeyParameters(Base64.getDecoder().decode(model.getPrivateKey().getBytes()), 0);
                 final Ed25519Signer sig = new Ed25519Signer();
-                sig.init(true, (CipherParameters)privateKey2);
+                sig.init(true, privateKey2);
                 sig.update(req.getBytes(), 0, req.length());
                 final byte[] s1 = sig.generateSignature();
                 sign = Base64.getEncoder().encodeToString(s1);
@@ -179,8 +222,7 @@ public class SigningUtility
         digest.update(test, 0, test.length);
         final byte[] hash = new byte[digest.getDigestSize()];
         digest.doFinal(hash, 0);
-        final String hex = Hex.toHexString(hash);
-        return Base64.getUrlEncoder().encodeToString(hex.getBytes());
+        return Base64.getEncoder().encodeToString(hash);
     }
     
     public boolean validateTime(String crt, String exp) {
