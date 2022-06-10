@@ -81,24 +81,26 @@ public class HeaderValidator
             HeaderValidator.log.error(errorCode4.getMessage());
             throw new ApplicationException(errorCode4);
         }
+        /*
         if (!this.signingUtility.validateTime(headersMap.get("created"), headersMap.get("expires"))) {
             final ErrorCode errorCode4 = isAuthHeader ? ErrorCode.REQUEST_EXPIRED : ErrorCode.PROXY_REQUEST_EXPIRED;
             HeaderValidator.log.error(errorCode4.getMessage());
             throw new ApplicationException(errorCode4);
-        }
+        }*/
         HeaderValidator.log.info("checking lookup for the key {}", (Object)key);
         if (lookupResponse == null || lookupResponse.getSigningPublicKey() == null) {
             final ErrorCode errorCode4 = isAuthHeader ? ErrorCode.AUTH_FAILED : ErrorCode.PROXY_AUTH_FAILED;
             HeaderValidator.log.error(errorCode4.getMessage());
             throw new ApplicationException(errorCode4);
         }
-        final SigningModel signingModel = this.configService.getSigningConfiguration(subscriberId);
-        if (signingModel.isCertificateUsed()) {
-            this.verifySignatureUsingCertificate(headersMap, lookupResponse, requestBody);
-        }
-        else {
+        
+        //final SigningModel signingModel = this.configService.getSigningConfiguration(subscriberId);
+        //if (signingModel.isCertificateUsed()) {
+        //    this.verifySignatureUsingCertificate(headersMap, lookupResponse, requestBody);
+        //}
+        //else {
             this.verifySignatureUsingPublicKey(headersMap, lookupResponse, requestBody);
-        }
+        //}
         return keyIdDto;
     }
     

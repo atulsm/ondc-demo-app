@@ -76,10 +76,12 @@ public class SearchControllerSeller
         final String bppId = context.getBppId();
         final ConfigModel configModel = this.configService.loadApplicationConfiguration(bppId, "search");
         
+        /*
         if(!configModel.getWhitelistBaps().contains(bapId)) {
             SearchControllerSeller.log.debug("Rejecting call from " + bapId + " since its not whitelisted");
             return new ResponseEntity(HttpStatus.OK);
         }
+        */
         
         SearchControllerSeller.log.info("The body in {} adaptor is {}", (Object)"search", (Object)this.jsonUtil.unpretty(body));
         SearchControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
@@ -89,7 +91,7 @@ public class SearchControllerSeller
         SearchControllerSeller.log.info("does buyer {} requires to be authenticated ? {}", (Object)bapId, (Object)authenticate);
         if (authenticate) {
             final LookupRequest lookupRequest = new LookupRequest((String)null, context.getCountry(), context.getCity(), context.getDomain(), BecknUserType.BAP.type());
-            this.validator.validateHeader(bppId, httpHeaders, body, lookupRequest);
+            this.validator.validateHeader(bapId, httpHeaders, body, lookupRequest);
         }
         this.auditService.audit(this.buildAuditModel(httpHeaders, body, model));
         return (ResponseEntity<String>)this.service.search(httpHeaders, model);
