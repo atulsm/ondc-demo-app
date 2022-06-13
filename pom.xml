@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <groupId>ondc-demo-app</groupId>
-  <artifactId>ondc-demo-app</artifactId>
+  <groupId>ondc-demo-app-use-fkiternal</groupId>
+  <artifactId>ondc-demo-app-use-fkinternal</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>ONDC Testing</name>
-  <description>ONDC Testing</description>
+  <name>DEPRECATED REPO. Use FKInternal instead.</name>
+  <description>ONDC Testing. Use fkinternal repo instead.</description>
   
   <parent>
 		<groupId>org.springframework.boot</groupId>

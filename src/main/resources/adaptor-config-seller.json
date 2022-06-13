@@ -17,7 +17,7 @@
 		"api": [
 			{
 				"name": "search",
-				"http_entity_endpoint": "http://3.111.199.126:8089/search/v1",
+				"http_entity_endpoint": "http://localhost:8089/search/v1",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
@@ -35,7 +35,7 @@
 			},
 			{
 				"name": "cancel",
-				"http_entity_endpoint": "http://3.111.199.126:8089/seller/mock/cancel",
+				"http_entity_endpoint": "http://localhost:8089/seller/mock/cancel",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
@@ -44,7 +44,7 @@
 			},
 			{
 				"name": "confirm",
-				"http_entity_endpoint": "http://3.111.199.126:8089/confirm/v1",
+				"http_entity_endpoint": "http://localhost:8089/confirm/v1",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
@@ -53,7 +53,7 @@
 			},
 			{
 				"name": "init",
-				"http_entity_endpoint": "http://3.111.199.126:8089/init/v1",
+				"http_entity_endpoint": "http://localhost:8089/init/v1",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
@@ -89,7 +89,7 @@
 			},
 			{
 				"name": "track",
-				"http_entity_endpoint": "http://3.111.199.126:8089/track/v1",
+				"http_entity_endpoint": "http://localhost:8089/track/v1",
 				"http_timeout": 8000,
 				"http_retry_count": 0,
 				"header_validity": 600000,
