@@ -30,6 +30,8 @@ import com.nsdl.beckn.common.service.AuditService;
 import com.nsdl.beckn.common.service.ApplicationConfigService;
 import com.nsdl.beckn.common.util.JsonUtil;
 import com.nsdl.beckn.common.validator.HeaderValidator;
+import com.nsdl.beckn.confirm.controller.ConfirmControllerSeller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import com.nsdl.beckn.track.service.TrackServiceSeller;
 import org.slf4j.Logger;
@@ -54,8 +56,7 @@ public class TrackControllerSeller
     
     @PostMapping({ "/track" })
     public ResponseEntity<String> track(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
-        TrackControllerSeller.log.info("The body in {} adaptor is {}", (Object)"track", (Object)this.jsonUtil.unpretty(body));
-        TrackControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+    	TrackControllerSeller.log.info(body + httpHeaders);
 
         //Injecting remote client hostname to headers
         httpHeaders.add("remoteHost", servletRequest.getRemoteHost());

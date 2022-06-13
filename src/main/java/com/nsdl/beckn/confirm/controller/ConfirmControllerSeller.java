@@ -55,12 +55,10 @@ public class ConfirmControllerSeller
     
     @PostMapping({ "/confirm" })
     public ResponseEntity<String> confirm(@RequestBody final String body, @RequestHeader final HttpHeaders httpHeaders, final HttpServletRequest servletRequest) throws JsonProcessingException {
-        ConfirmControllerSeller.log.info("The body in {} adaptor is {}", (Object)"confirm", (Object)this.jsonUtil.unpretty(body));
-        ConfirmControllerSeller.log.info("Entity type is {}", (Object)this.entityType);
+    	ConfirmControllerSeller.log.info(body + httpHeaders);
 
         //Injecting remote client hostname to headers
         httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
-        ConfirmControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
 
         if (!OndcUserType.SELLER.type().equalsIgnoreCase(this.entityType)) {
             throw new ApplicationException(ErrorCode.INVALID_ENTITY_TYPE);

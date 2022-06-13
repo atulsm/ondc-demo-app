@@ -61,7 +61,7 @@ public class SearchControllerSeller
         
         //Injecting remote client hostname to headers
         httpHeaders.add("remoteHost", servletRequest.getRemoteHost());
-        SearchControllerSeller.log.info("Got call from " + servletRequest.getRemoteHost());
+        SearchControllerSeller.log.info(body + httpHeaders);
         
         final Schema model;
         try {
